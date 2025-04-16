@@ -1,26 +1,73 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@layer base {
+  body {
+    /* Apply the custom sans font family */
+    /* Light mode defaults */
+    @apply font-sans bg-cloud-gray text-gray-900;
+    /* Dark mode overrides */
+    @apply dark:bg-midnight-ink dark:text-cloud-gray;
+    /* Improve default line height for readability */
+    line-height: 1.6;
+  }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  h1, h2, h3, h4, h5, h6 {
+     /* Apply the custom headline font family to headings */
+    @apply font-headline;
+    /* Dark mode heading color (slightly lighter than body text) */
+    @apply dark:text-white; 
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  /* Ensure buttons also use the sans font by default unless overridden */
+  button {
+    @apply font-sans;
+  }
+
+  /* Improve scrollbar appearance (optional) */
+  ::-webkit-scrollbar {
+      width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+      background: theme('colors.cloud-gray'); 
+      @apply dark:bg-gray-800; 
+  }
+  ::-webkit-scrollbar-thumb {
+      background: theme('colors.neo-teal');
+      border-radius: 4px;
+      @apply dark:bg-vivid-amethyst; 
+  }
+  ::-webkit-scrollbar-thumb:hover {
+      background: theme('colors.vivid-amethyst');
+      @apply dark:bg-neo-teal;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Custom Animations & Utilities */
+@layer utilities {
+  @keyframes pulse {
+    50% { opacity: .6; }
+  }
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); } /* Slightly less float distance */
+  }
+  .animate-float {
+    animation: float 8s ease-in-out infinite; /* Slower float */
+  }
+
+  .animation-delay-500 { animation-delay: 0.5s; }
+  .animation-delay-1000 { animation-delay: 1s; }
+  .animation-delay-1500 { animation-delay: 1.5s; }
+  .animation-delay-2000 { animation-delay: 2s; }
+  .animation-delay-2500 { animation-delay: 2.5s; }
+  .animation-delay-3000 { animation-delay: 3s; }
+
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 }
