@@ -10,14 +10,12 @@ const HeroSection = () => {
     // Use the defined hero-gradient, adjust min-height for better spacing
     <section className="relative text-center py-24 px-4 min-h-[80vh] md:min-h-[75vh] flex flex-col justify-center items-center 
                      bg-hero-gradient overflow-hidden text-white">
-      
       {/* Background Glow Pulse - Use theme colors */}
       <div className="absolute inset-0 flex justify-center items-center z-0">
         <div className="absolute w-72 h-72 md:w-[500px] md:h-[500px] bg-deep-purple/20 rounded-full animate-pulse-slow blur-3xl"></div>
         {/* Core element pulse - Brighter, central accent */}
         <div className="absolute w-60 h-60 md:w-[400px] md:h-[400px] bg-neon-accent/15 rounded-full animate-pulse-slow blur-3xl animation-delay-2000"></div>
       </div>
-
       {/* Icon Overlay Clusters - Use light-gray, update icons */}
       <div className="absolute inset-0 z-0 opacity-40 dark:opacity-50">
           {[ { Icon: BookOpen, top: '15%', left: '10%', delay: '500' }, // Fanfic
@@ -38,7 +36,6 @@ const HeroSection = () => {
             </div>
           ))}
       </div>
-      
       {/* Main Copy Area - Use headline font explicitly if needed, adjust text colors */}
       <div className="relative z-10 text-center space-y-5 max-w-3xl">
         <h1 className="font-headline text-5xl md:text-6xl font-extrabold text-white drop-shadow-lg" style={{ textShadow: '0px 2px 4px rgba(0,0,0,0.4)' }}>
@@ -65,7 +62,6 @@ const HeroSection = () => {
           </Link>
         </div>
       </div>
-
       {/* Footer Strip - Use theme colors and update links/text */}
       <div className="absolute bottom-0 left-0 right-0 p-4 z-10">
         <div className="max-w-4xl mx-auto overflow-x-auto whitespace-nowrap no-scrollbar text-center">
@@ -76,10 +72,10 @@ const HeroSection = () => {
              { text: 'Featured Creators', icon: <Gamepad2 className="w-3 h-3 mr-1.5" />, href: '/explore?filter=creators' }, // Example filter
           ].map(item => (
             <Link
-              href={item.href} 
+              href={item.href}
               key={item.text}
               className="inline-flex items-center px-4 py-1 text-light-gray/70 hover:text-neon-accent transition-colors text-sm cursor-pointer mx-1"
-            >
+              legacyBehavior>
               {item.icon} {item.text}
             </Link>
           ))}

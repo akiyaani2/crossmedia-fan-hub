@@ -35,7 +35,6 @@ export default function FandomPage({ params }: { params: { fandomSlug: string } 
         {/* Add Fandom Description / Stats Later */}
         <p className="text-sm md:text-base text-light-gray/80 mt-1">[Fandom description placeholder]</p>
       </div>
-
       {/* Tab Navigation */}
       <div className="mb-8 border-b border-medium-gray/30 flex space-x-1">
         {tabs.map(tab => (
@@ -48,27 +47,25 @@ export default function FandomPage({ params }: { params: { fandomSlug: string } 
            </TabButton>
          ))}
       </div>
-
       {/* Content Area based on active tab */}
       <div>
         {/* Conditional rendering based on activeTab state */} 
         {activeTab === 'Works' && (
           // Reuse or adapt ContentGrid component here
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-             {/* Map ContentCard placeholders for this fandom */}
-             {Array.from({ length: 8 }).map((_, index) => (
-                <div key={index} className="bg-gray-800/50 border border-medium-gray/30 rounded-lg aspect-video flex items-center justify-center">
-                  <p className="text-medium-gray">Work Card {index + 1}</p>
-                </div>
-             ))}
-          </div>
+          (<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+            {/* Map ContentCard placeholders for this fandom */}
+            {Array.from({ length: 8 }).map((_, index) => (
+               <div key={index} className="bg-gray-800/50 border border-medium-gray/30 rounded-lg aspect-video flex items-center justify-center">
+                 <p className="text-medium-gray">Work Card {index + 1}</p>
+               </div>
+            ))}
+          </div>)
         )}
         {/* Add placeholders for other tabs */}
         {activeTab === 'Discussions' && <div className="p-6 bg-gray-800/30 rounded-lg text-light-gray">[Discussions Feed Placeholder]</div>}
         {activeTab === 'Creators' && <div className="p-6 bg-gray-800/30 rounded-lg text-light-gray">[Creators List Placeholder]</div>}
         {activeTab === 'Info' && <div className="p-6 bg-gray-800/30 rounded-lg text-light-gray">[Fandom Info/Wiki Placeholder]</div>}
       </div>
-
     </div>
   );
 }

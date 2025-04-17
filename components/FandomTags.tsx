@@ -30,14 +30,14 @@ const FandomTags = () => {
             return (
               <Link
                 // Link to explore page with filter applied
-                href={`/explore?tag=${tag.slug}`} 
-                key={tag.slug} 
+                href={`/explore?tag=${tag.slug}`}
+                key={tag.slug}
                 // Use theme colors for tags, border for hover effect
                 className="inline-flex items-center font-mono bg-cosmic-blue/70 hover:bg-cosmic-blue text-light-gray hover:text-white 
                            text-sm md:text-base font-medium px-4 py-1.5 md:px-5 md:py-2 rounded-full 
                            border border-transparent hover:border-neon-accent/50 
                            cursor-pointer shadow-sm hover:shadow-md transition-all duration-200 ease-in-out transform hover:-translate-y-0.5"
-              >
+                legacyBehavior>
                 <TagIcon className="w-4 h-4 mr-1.5 flex-shrink-0" />
                 {tag.name}
               </Link>
