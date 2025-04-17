@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { supabaseBrowser } from '@/lib/supabaseBrowser';
 import Card from '@/components/Card';
+import Sidebar from '@/components/Sidebar';
 import type { Database } from '@/types/supabase';
 
 // MediaItem type from Supabase database
@@ -48,54 +49,58 @@ export default function ExplorePage() {
   }
 
   return (
-    <div className="p-6">
-      <div className="relative w-full max-w-xl">
-        <input
-          type="text"
-          className="border rounded px-3 py-2 w-full"
-          placeholder="Search movies, games, comics…"
-          value={query}
-          onChange={e => setQuery(e.target.value)}
-        />
-        {suggestions.length > 0 && (
-          <ul className="absolute bg-white dark:bg-gray-800 w-full mt-1 rounded shadow-lg z-10">
-            {suggestions.map((t, i) => (
-              <li
-                key={i}
-                className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
-                onClick={() => { setQuery(t); handleSearch(t); }}
-              >
-                {t}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-      <button
-        onClick={() => handleSearch()}
-        className="mt-2 bg-cosmic-blue text-white px-4 py-2 rounded"
-      >
-        Search
-      </button>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 py-6">
-        {items.map(item => (
-          <Card
-            key={item.id}
-            title={item.title}
-            posterUrl={item.poster_url}
-            type={item.media_type}
-            user="—"
-            likes={item.popularity ?? 0}
-            comments={(item.popularity ?? 0) * 10}
+    <div className="flex gap-8">
+      <Sidebar />
+      <main className="flex-1 p-6">
+        <h1 className="text-3xl font-bold mb-6">Explore Content</h1>
+        <div className="relative w-full max-w-xl">
+          <input
+            type="text"
+            className="border rounded px-3 py-2 w-full"
+            placeholder="Search movies, games, comics…"
+            value={query}
+            onChange={e => setQuery(e.target.value)}
           />
-        ))}
-        {!items.length && (
-          <p className="col-span-full text-center text-gray-500">
-            No results for “{query}”
-          </p>
-        )}
-      </div>
+          {suggestions.length > 0 && (
+            <ul className="absolute bg-white dark:bg-gray-800 w-full mt-1 rounded shadow-lg z-10">
+              {suggestions.map((t, i) => (
+                <li
+                  key={i}
+                  className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                  onClick={() => { setQuery(t); handleSearch(t); }}
+                >
+                  {t}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+        <button
+          onClick={() => handleSearch()}
+          className="mt-2 bg-cosmic-blue text-white px-4 py-2 rounded"
+        >
+          Search
+        </button>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 py-6">
+          {items.map(item => (
+            <Card
+              key={item.id}
+              title={item.title}
+              posterUrl={item.poster_url}
+              type={item.media_type}
+              user="—"
+              likes={item.popularity ?? 0}
+              comments={(item.popularity ?? 0) * 10}
+            />
+          ))}
+          {!items.length && (
+            <p className="col-span-full text-center text-gray-500">
+              No results for “{query}”
+            </p>
+          )}
+        </div>
+      </main>
     </div>
   );
 } 
