@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabaseAdmin';
+import supabaseAdmin from '@/lib/supabaseAdmin';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -8,14 +8,19 @@ export async function GET(request: NextRequest) {
 
   const { data, error } = await supabaseAdmin
     .from('media_items')
-    .select('title')
+    .select('id, title, media_type')
     .ilike('title', `%${q}%`)
     .limit(limit);
 
   if (error) {
     console.error(error);
-    return NextResponse.json({ titles: [] }, { status: 500 });
+    return NextResponse.json([], { status: 500 });
   }
 
-  return NextResponse.json({ titles: data.map((r: { title: string }) => r.title) });
+  const results = (data ?? []).map(item => ({
+    id: item.id,
+    title: item.title,
+    type: item.media_type,
+  }));
+  return NextResponse.json(results);
 } 
