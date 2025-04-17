@@ -26,7 +26,7 @@ const WorkSidebar = ({ workData }: { workData: any }) => {
         <Link
           href={`/user/${workData.authorSlug}`}
           className="flex items-center gap-3 group"
-          legacyBehavior>
+          >
           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cosmic-blue to-deep-purple flex-shrink-0 group-hover:ring-2 ring-neon-accent/50 transition-all"></div>
           <span className="text-light-gray group-hover:text-white transition-colors">{workData.author}</span>
         </Link>
@@ -39,7 +39,7 @@ const WorkSidebar = ({ workData }: { workData: any }) => {
           <Link
             href={`/fandoms/${workData.fandomSlug}`}
             className="block text-sm text-light-gray hover:text-neon-accent transition-colors"
-            legacyBehavior>{workData.fandom}</Link>
+            >{workData.fandom}</Link>
         </div>
         <div>
           <span className="text-xs font-medium text-medium-gray uppercase">Published:</span>
@@ -53,7 +53,7 @@ const WorkSidebar = ({ workData }: { workData: any }) => {
                  href={`/explore?tag=${tag.toLowerCase()}`}
                  key={tag}
                  className="text-xs bg-cosmic-blue/70 text-light-gray px-2 py-0.5 rounded hover:bg-cosmic-blue transition-colors"
-                 legacyBehavior>
+                 >
                  {tag}
                </Link>
              ))}
@@ -146,7 +146,7 @@ export default function WorkPage({ params }: { params: { workId: string } }) {
         <Link
           href={`/user/${workData.authorSlug}`}
           className="text-lg text-light-gray hover:text-neon-accent transition-colors"
-          legacyBehavior>
+          >
           by {workData.author}
         </Link>
       </div>

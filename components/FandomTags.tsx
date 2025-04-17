@@ -37,7 +37,7 @@ const FandomTags = () => {
                            text-sm md:text-base font-medium px-4 py-1.5 md:px-5 md:py-2 rounded-full 
                            border border-transparent hover:border-neon-accent/50 
                            cursor-pointer shadow-sm hover:shadow-md transition-all duration-200 ease-in-out transform hover:-translate-y-0.5"
-                legacyBehavior>
+                >
                 <TagIcon className="w-4 h-4 mr-1.5 flex-shrink-0" />
                 {tag.name}
               </Link>

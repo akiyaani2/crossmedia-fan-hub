@@ -88,14 +88,17 @@ const FandomsPanel = () => {
                   <Link
                     href={`/fandoms/${item.slug}`}
                     className="flex items-center gap-2 text-light-gray/80 hover:text-white hover:translate-x-1 transition-all duration-150 ease-in-out group"
-                    legacyBehavior>
-                    {/* Placeholder image - show if available */}
-                    {item.img ? (
-                      <Image src={item.img} alt="" width={20} height={20} className="w-5 h-5 rounded object-cover flex-shrink-0" />
-                    ) : (
-                      <div className="w-5 h-5 rounded bg-medium-gray/50 flex-shrink-0 group-hover:bg-cosmic-blue/70 transition-colors"></div>
-                    )}
-                    <span>{item.name}</span>
+                  >
+                    {/* Multiple children wrapped in a Fragment or span */}
+                    <>
+                      {/* Placeholder image - show if available */}
+                      {item.img ? (
+                        <Image src={item.img} alt="" width={20} height={20} className="w-5 h-5 rounded object-cover flex-shrink-0" />
+                      ) : (
+                        <div className="w-5 h-5 rounded bg-medium-gray/50 flex-shrink-0 group-hover:bg-cosmic-blue/70 transition-colors"></div>
+                      )}
+                      <span>{item.name}</span>
+                    </>
                   </Link>
                 </li>
               ))}
@@ -124,12 +127,15 @@ const TrendingPanel = () => (
         href={`/works/${item.id}`}
         key={item.id}
         className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-700 transition duration-150 ease-in-out"
-        legacyBehavior>
-        <div className="w-16 h-10 bg-gray-600 rounded flex-shrink-0"></div> {/* Placeholder Thumbnail */}
-        <div className="flex-grow">
-          <h4 className="text-sm font-semibold truncate text-white">{item.title}</h4>
-          <p className="text-xs text-gray-400">{item.type} - {item.stats}</p>
-        </div>
+      >
+        {/* Multiple children wrapped in a Fragment or div */}
+        <>
+          <div className="w-16 h-10 bg-gray-600 rounded flex-shrink-0"></div> {/* Placeholder Thumbnail */}
+          <div className="flex-grow">
+            <h4 className="text-sm font-semibold truncate text-white">{item.title}</h4>
+            <p className="text-xs text-gray-400">{item.type} - {item.stats}</p>
+          </div>
+        </>
       </Link>
     ))}
     <div className="mt-3 text-center">
@@ -150,7 +156,7 @@ const CreatePanel = () => (
             <Link
               href={`/create/${item.toLowerCase().replace(/\s+/g, '-')}`}
               className="block p-2 rounded-lg text-sm text-gray-400 hover:bg-gray-700 hover:text-spring-mint"
-              legacyBehavior>
+            >
               {item}
             </Link>
           </li>
@@ -165,7 +171,7 @@ const CreatePanel = () => (
             <Link
               href={`/resources/${item.toLowerCase().replace(/\s+/g, '-')}`}
               className="block p-2 rounded-lg text-sm text-gray-400 hover:bg-gray-700 hover:text-spring-mint"
-              legacyBehavior>
+            >
               {item}
             </Link>
           </li>
@@ -201,9 +207,9 @@ const Navbar = () => {
   ];
 
   const popoverNavItems = [
-    { name: 'Fandoms', panel: <FandomsPanel /> },
-    { name: 'Trending', panel: <TrendingPanel /> },
-    { name: 'Create', panel: <CreatePanel /> },
+    { name: 'Fandoms', component: FandomsPanel },
+    { name: 'Trending', component: TrendingPanel },
+    { name: 'Create', component: CreatePanel },
   ];
 
   return (
@@ -215,7 +221,7 @@ const Navbar = () => {
           href="/"
           className="flex items-center gap-2 text-xl font-bold text-neon-accent hover:opacity-80 transition-opacity"
           onClick={closeMobileMenu}
-          legacyBehavior>
+        >
           <Flame className="w-6 h-6 text-neon-accent" /> {/* Use accent color */}
           CrossMedia Fan Hub
         </Link>
@@ -228,7 +234,7 @@ const Navbar = () => {
               key={item.name}
               href={item.href}
               className="group inline-flex items-center rounded-md px-3 py-2 text-light-gray hover:bg-deep-purple/50 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-accent focus-visible:ring-opacity-75 transition-colors"
-              legacyBehavior>
+            >
               {item.name === 'Explore' && <Compass className="mr-1 h-5 w-5 text-light-gray/70 group-hover:text-white transition-colors" />}
               <span>{item.name}</span>
             </Link>
@@ -260,7 +266,7 @@ const Navbar = () => {
                     <Popover.Panel className={`absolute left-1/2 z-10 mt-3 w-screen ${item.name === 'Fandoms' ? 'max-w-xl' : 'max-w-sm'} -translate-x-1/2 transform px-4 sm:px-0`}>
                       <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
                         {/* Panel content is now themed */}
-                        {item.panel}
+                        <item.component />
                       </div>
                     </Popover.Panel>
                   </Transition>
@@ -280,7 +286,7 @@ const Navbar = () => {
                  <Link
                    href="/profile/edit"
                    className="flex items-center gap-2 text-sm text-light-gray hover:text-white group"
-                   legacyBehavior>
+                 >
                    {userProfile.avatar_url ? (
                      <Image 
                        src={userProfile.avatar_url} 
@@ -302,10 +308,10 @@ const Navbar = () => {
                  </button>
                </div>)
              ) : (
-               <Link href="/auth/sign-in" passHref legacyBehavior>
-                  <a className="bg-cosmic-blue text-white px-4 py-1.5 rounded-md text-sm font-medium hover:opacity-90 transition-opacity shadow-sm">
+               <Link href="/auth/sign-in" >
+                  <button className="bg-cosmic-blue hover:bg-cosmic-blue/80 text-white font-medium py-2 px-4 rounded-lg text-sm transition duration-150 ease-in-out">
                     Sign In
-                  </a>
+                  </button>
                </Link>
              )}
            </div>
@@ -335,22 +341,22 @@ const Navbar = () => {
         <div className="absolute top-full left-0 w-full bg-midnight-ink shadow-md border-t border-deep-purple/50 px-4 pt-3 pb-4">
           <div className="flex flex-col gap-3">
             {/* Mobile simple links */}
-            {simpleNavItems.map(item => (
+            {simpleNavItems.map((item) => (
               <Link
-                href={item.href}
                 key={item.name}
+                href={item.href}
                 className="block py-1 text-light-gray hover:text-neon-accent"
                 onClick={closeMobileMenu}
-                legacyBehavior>{item.name}</Link>
+              >{item.name}</Link>
             ))}
             {/* Mobile popover links (simplified) */}
-            {popoverNavItems.map(item => (
+            {popoverNavItems.map((item) => (
               <Link
                 href={`/${item.name.toLowerCase()}`}
                 key={item.name}
                 className="block py-1 text-light-gray hover:text-neon-accent"
                 onClick={closeMobileMenu}
-                legacyBehavior>{item.name}</Link>
+              >{item.name}</Link>
             ))}
             {/* Mobile Sign In Button */}
             <div className="border-t border-gray-700 pt-4 mt-4">
@@ -362,13 +368,13 @@ const Navbar = () => {
                     Sign Out
                   </button>
               ) : (
-                <Link href="/auth/sign-in" passHref legacyBehavior>
-                  <a 
+                <Link href="/auth/sign-in" >
+                  <button 
                     onClick={closeMobileMenu}
                     className="block rounded-md px-3 py-2 text-base font-medium text-cosmic-blue hover:bg-gray-700 hover:text-blue-300"
                   >
                     Sign In
-                  </a>
+                  </button>
                 </Link>
               )}
             </div>

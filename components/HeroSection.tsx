@@ -75,7 +75,7 @@ const HeroSection = () => {
               href={item.href}
               key={item.text}
               className="inline-flex items-center px-4 py-1 text-light-gray/70 hover:text-neon-accent transition-colors text-sm cursor-pointer mx-1"
-              legacyBehavior>
+            >
               {item.icon} {item.text}
             </Link>
           ))}
