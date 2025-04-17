@@ -1,4 +1,4 @@
-'use client'; // Required for AnimatePresence and usePathname
+// Removed 'use client'
 
 import type { Metadata } from "next";
 // Remove Geist fonts as we're replacing them
@@ -8,8 +8,12 @@ import { Inter, Roboto, Space_Grotesk, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { motion, AnimatePresence } from 'framer-motion';
-import { usePathname } from 'next/navigation'; // To get unique key for AnimatePresence
+// import ClientLayout from "@/components/ClientLayout"; // Removed for now
+// import { useState } from 'react';
+// import { createPagesBrowserClient } from '@supabase/auth-helpers-nextjs';
+// import { SessionContextProvider, Session } from '@supabase/auth-helpers-react';
+// import { Toaster } from 'sonner'; // Import Toaster for notifications
+import SupabaseProvider from "@/components/SupabaseProvider"; // Import the new provider
 
 // Configure Inter (Body/Fallback Headline)
 const inter = Inter({
@@ -69,12 +73,13 @@ const pageTransition = {
   duration: 0.4
 };
 
+// RootLayout is a Server Component again
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
-  const pathname = usePathname(); // Get current path for unique key
+}) {
+  // Removed Supabase client state
 
   return (
     <html lang="en">
@@ -91,22 +96,15 @@ export default function RootLayout({
         // Set base dark background for the whole page
         } antialiased flex flex-col min-h-screen bg-midnight-ink dark:bg-midnight-ink`}
       >
-        <Navbar />
-        {/* Wrap main content with AnimatePresence and motion.main */}
-        <AnimatePresence mode="wait"> {/* 'wait' ensures exit animation finishes first */}
-          <motion.main
-            key={pathname} // Unique key triggers animation on path change
-            variants={pageVariants}
-            initial="initial"
-            animate="in"
-            exit="out"
-            transition={pageTransition}
-            className="flex-grow"
-          >
-            {children}
-          </motion.main>
-        </AnimatePresence>
-        <Footer />
+        {/* Wrap the core layout with the SupabaseProvider */}
+        <SupabaseProvider>
+          <Navbar />
+          <main className="flex-grow">
+             {children}
+          </main>
+          <Footer />
+          {/* Toaster moved to SupabaseProvider */}
+        </SupabaseProvider>
       </body>
     </html>
   );

@@ -1,6 +1,6 @@
 // app/page.tsx
 
-'use client'; // Required for motion components
+'use client'; // Required for motion components AND hooks
 
 import HeroSection from "@/components/HeroSection";
 import TrendingCarousel from "@/components/TrendingCarousel";
@@ -8,6 +8,8 @@ import FeaturesGrid from "@/components/FeaturesGrid";
 import FandomTags from "@/components/FandomTags";
 import CommunityHighlights from "@/components/CommunityHighlights";
 import { motion } from 'framer-motion';
+import { useUser } from '@supabase/auth-helpers-react'; // Import useUser
+import { useEffect } from 'react'; // Import useEffect
 
 // Define animation variants for sections
 const sectionVariants = {
@@ -25,6 +27,13 @@ const sectionVariants = {
 };
 
 export default function Home() {
+  const user = useUser(); // Get user status
+
+  // Log user status on component mount and when user changes
+  useEffect(() => {
+    console.log("Supabase User Status:", user ? user : "Not Logged In");
+  }, [user]);
+
   return (
     <>
       {/* Hero section typically doesn't need scroll animation */}

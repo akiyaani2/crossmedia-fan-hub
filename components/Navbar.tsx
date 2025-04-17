@@ -2,8 +2,11 @@
 
 import React, { useState, Fragment } from 'react'; // Import Fragment
 import Link from 'next/link'; // Use Next.js Link for navigation
-import { Flame, Menu, X, ChevronDown, Compass, Tv, Book, Film, Gamepad2, Music, DiscAlbum } from 'lucide-react'; // Add Menu, X, and ChevronDown icons
+import { Flame, Menu, X, ChevronDown, Compass, Tv, Book, Film, Gamepad2, Music, DiscAlbum, User, LogOut } from 'lucide-react'; // Add Menu, X, and ChevronDown icons
 import { Popover, Transition } from '@headlessui/react'; // Import Popover and Transition
+import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react'; // Import hooks
+import { useRouter } from 'next/navigation'; // For redirect after sign out
+import Image from 'next/image'; // For user avatar
 
 // --- Placeholder Components for Panel Content ---
 // (These could be moved to separate files later)
@@ -88,7 +91,7 @@ const FandomsPanel = () => {
                   >
                     {/* Placeholder image - show if available */}
                     {item.img ? (
-                      <img src={item.img} alt="" className="w-5 h-5 rounded object-cover flex-shrink-0" />
+                      <Image src={item.img} alt="" width={20} height={20} className="w-5 h-5 rounded object-cover flex-shrink-0" />
                     ) : (
                       <div className="w-5 h-5 rounded bg-medium-gray/50 flex-shrink-0 group-hover:bg-cosmic-blue/70 transition-colors"></div>
                     )}
@@ -117,11 +120,11 @@ const TrendingPanel = () => (
       { id: 2, title: 'Webcomic: Dragon Prince Ch. 12', type: 'Comic', stats: '850 ♡' },
       { id: 3, title: 'Stunning Character Edit [AMV]', type: 'Video', stats: '2.1k ♡' },
     ].map(item => (
-      <Link href={`/works/${item.id}`} key={item.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-cloud-gray dark:hover:bg-gray-700 transition duration-150 ease-in-out">
-        <div className="w-16 h-10 bg-gray-300 dark:bg-gray-600 rounded flex-shrink-0"></div> {/* Placeholder Thumbnail */}
+      <Link href={`/works/${item.id}`} key={item.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-700 transition duration-150 ease-in-out">
+        <div className="w-16 h-10 bg-gray-600 rounded flex-shrink-0"></div> {/* Placeholder Thumbnail */}
         <div className="flex-grow">
-          <h4 className="text-sm font-semibold truncate text-gray-900 dark:text-white">{item.title}</h4>
-          <p className="text-xs text-gray-500 dark:text-gray-400">{item.type} - {item.stats}</p>
+          <h4 className="text-sm font-semibold truncate text-white">{item.title}</h4>
+          <p className="text-xs text-gray-400">{item.type} - {item.stats}</p>
         </div>
       </Link>
     ))}
@@ -136,11 +139,11 @@ const TrendingPanel = () => (
 const CreatePanel = () => (
   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-5 max-w-md">
     <div>
-      <h4 className="font-semibold text-base mb-2 text-gray-900 dark:text-white">Start New...</h4>
+      <h4 className="font-semibold text-base mb-2 text-white">Start New...</h4>
       <ul className="space-y-1">
         {[ 'Fanfic', 'Comic', 'Video Edit', 'Reading List'].map(item => (
           <li key={item}>
-            <Link href={`/create/${item.toLowerCase().replace(/\s+/g, '-')}`} className="block p-2 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:bg-cloud-gray dark:hover:bg-gray-700 hover:text-neo-teal dark:hover:text-spring-mint">
+            <Link href={`/create/${item.toLowerCase().replace(/\s+/g, '-')}`} className="block p-2 rounded-lg text-sm text-gray-400 hover:bg-gray-700 hover:text-spring-mint">
               {item}
             </Link>
           </li>
@@ -148,11 +151,11 @@ const CreatePanel = () => (
       </ul>
     </div>
     <div>
-      <h4 className="font-semibold text-base mb-2 text-gray-900 dark:text-white">Resources</h4>
+      <h4 className="font-semibold text-base mb-2 text-white">Resources</h4>
       <ul className="space-y-1">
         {[ 'Writing Prompts', 'Challenge Calendar', 'Submission Rules'].map(item => (
           <li key={item}>
-            <Link href={`/resources/${item.toLowerCase().replace(/\s+/g, '-')}`} className="block p-2 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:bg-cloud-gray dark:hover:bg-gray-700 hover:text-neo-teal dark:hover:text-spring-mint">
+            <Link href={`/resources/${item.toLowerCase().replace(/\s+/g, '-')}`} className="block p-2 rounded-lg text-sm text-gray-400 hover:bg-gray-700 hover:text-spring-mint">
               {item}
             </Link>
           </li>
@@ -166,9 +169,20 @@ const CreatePanel = () => (
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const session = useSession();
+  const supabase = useSupabaseClient();
+  const router = useRouter();
+  // TODO: Fetch user profile to get avatar_url if available
+  const userProfile = { avatar_url: null }; // Placeholder
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    closeMobileMenu();
+    router.push('/'); // Redirect to home after sign out
+  };
 
   // Add Explore as a simple link
   const simpleNavItems = [
@@ -246,9 +260,37 @@ const Navbar = () => {
         <div className="flex items-center gap-4">
            {/* Desktop Auth Button - Use theme colors */}
            <div className="hidden md:block">
-             <button className="bg-cosmic-blue text-white px-4 py-1.5 rounded-md text-sm font-medium hover:opacity-90 transition-opacity shadow-sm">
-               Sign In
-             </button>
+             {session ? (
+               // Simple User Menu (can be expanded later)
+               <div className="flex items-center gap-3">
+                 <Link href="/profile/edit" className="flex items-center gap-2 text-sm text-light-gray hover:text-white group">
+                   {userProfile.avatar_url ? (
+                     <Image 
+                       src={userProfile.avatar_url} 
+                       alt="User Avatar"
+                       width={28}
+                       height={28}
+                       className="rounded-full border border-medium-gray group-hover:border-neon-accent transition-colors"
+                     />
+                   ) : (
+                     <User className="w-6 h-6 p-1 rounded-full bg-gray-700 text-gray-400 border border-gray-600 group-hover:border-neon-accent group-hover:text-neon-accent transition-colors" />
+                   )}
+                 </Link>
+                  <button 
+                   onClick={handleSignOut} 
+                   className="bg-red-600/80 text-white px-3 py-1.5 rounded-md text-xs font-medium hover:bg-red-600 transition-opacity shadow-sm flex items-center gap-1"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Sign Out
+                  </button>
+                </div>
+             ) : (
+               <Link href="/auth/sign-in" passHref legacyBehavior>
+                  <a className="bg-cosmic-blue text-white px-4 py-1.5 rounded-md text-sm font-medium hover:opacity-90 transition-opacity shadow-sm">
+                    Sign In
+                  </a>
+               </Link>
+             )}
            </div>
 
            {/* Mobile Menu Toggle Button - Use theme colors */}
@@ -285,9 +327,25 @@ const Navbar = () => {
               <Link href={`/${item.name.toLowerCase()}`} key={item.name} className="block py-1 text-light-gray hover:text-neon-accent" onClick={closeMobileMenu}>{item.name}</Link>
             ))}
             {/* Mobile Sign In Button */}
-            <button className="w-full mt-2 bg-cosmic-blue text-white px-4 py-2 rounded-md text-sm font-medium hover:opacity-90">
-              Sign In
-            </button>
+            <div className="border-t border-gray-700 pt-4 mt-4">
+              {session ? (
+                  <button 
+                   onClick={handleSignOut} 
+                   className="w-full text-left block rounded-md px-3 py-2 text-base font-medium text-red-400 hover:bg-gray-700 hover:text-red-300"
+                  >
+                    Sign Out
+                  </button>
+              ) : (
+                <Link href="/auth/sign-in" passHref legacyBehavior>
+                  <a 
+                    onClick={closeMobileMenu}
+                    className="block rounded-md px-3 py-2 text-base font-medium text-cosmic-blue hover:bg-gray-700 hover:text-blue-300"
+                  >
+                    Sign In
+                  </a>
+                </Link>
+              )}
+            </div>
           </div>
         </div>
       </Transition>

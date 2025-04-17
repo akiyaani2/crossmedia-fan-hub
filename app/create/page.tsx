@@ -1,10 +1,38 @@
-import React from 'react';
+'use client'; // Required for hooks and state
+
+import React, { useState } from 'react';
+import Image from 'next/image';
 // Example icons for content types
 import { FileText, Image as ImageIcon, Video, Mic } from 'lucide-react';
+import { CoverArtUploadDropzone } from '@/components/CoverArtUploadDropzone'; // Import the component
+import { toast } from 'sonner';
 
 // Placeholder component for the form/editor area
 const CreationForm = () => {
-  // TODO: Implement actual form state and logic
+  const [coverArtUrl, setCoverArtUrl] = useState<string | null>(null);
+  // You'll need state to hold the ID of the work *after* it's initially created
+  // or pass it down if this form is also used for editing.
+  // For creation, you might create the work record first, get the ID, then allow upload.
+  const [workId, setWorkId] = useState<string | null>(null); // Placeholder
+
+  // Example: Simulate getting work ID after some initial save
+  const handleInitialSave = () => {
+    // TODO: Implement actual save logic for initial work data (title, type etc.)
+    // On success, get the new work ID from Supabase response
+    const newWorkId = `work_${Date.now()}`; // Replace with real ID
+    setWorkId(newWorkId);
+    toast.info("Initial work data saved. You can now upload cover art.");
+  };
+
+  const handleCoverArtUpload = (url: string | null, error?: Error) => {
+    if (url) {
+      setCoverArtUrl(url);
+      // No need to save here, the component handles it using workId
+    } else if (error) {
+      console.error("Cover art upload failed in parent:", error);
+    }
+  };
+
   return (
     <form className="space-y-6">
       {/* Content Type Selector (Example) */}
@@ -44,6 +72,36 @@ const CreationForm = () => {
           className="block w-full rounded-md border-medium-gray bg-gray-700/80 shadow-sm focus:border-neon-accent focus:ring-neon-accent sm:text-sm text-white placeholder-gray-400 px-3 py-2"
           placeholder="Enter the title of your work"
         />
+      </div>
+
+      {/* Cover Art Upload Section */}
+      <div>
+        <label className="block text-sm font-medium text-light-gray mb-1">
+          Cover Art (Optional)
+        </label>
+        {coverArtUrl && (
+          <div className="mb-2">
+            <Image
+              src={coverArtUrl}
+              alt="Current Cover Art"
+              width={200} // Adjust size as needed
+              height={112} // Maintain aspect ratio (e.g., 16:9)
+              className="rounded object-cover border border-medium-gray"
+            />
+          </div>
+        )}
+        {/* Only show dropzone if workId exists (or handle differently) */}
+        {workId ? (
+          <CoverArtUploadDropzone
+            workId={workId}
+            onUploadComplete={handleCoverArtUpload}
+          />
+        ) : (
+          <div className="p-4 rounded-md border border-dashed border-medium-gray bg-gray-800/30 text-center text-medium-gray">
+            Save initial work details first to enable cover art upload.
+            <button type="button" onClick={handleInitialSave} className="ml-2 text-neon-accent hover:underline text-sm">Save Draft</button>
+          </div>
+        )}
       </div>
 
       {/* Editor/Uploader Placeholder */}
