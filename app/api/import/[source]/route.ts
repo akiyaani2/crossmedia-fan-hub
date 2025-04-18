@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import type { Database } from '@/types/supabase'
 
 export async function GET(request: NextRequest, context: { params: { source: string } }) {
-  const { params } = await context
+  const { params } = context
   const { source } = params
   // Dynamically import external API helpers and supabase client
   const { fetchTMDB, fetchRAWG, fetchComicVine, supabaseAdmin } = await import('@/lib/externalApi')
@@ -28,13 +28,13 @@ export async function GET(request: NextRequest, context: { params: { source: str
       return NextResponse.json({ error: 'Invalid source' }, { status: 400 })
   }
 
-  const { data, error } = await supabaseAdmin
+  const { error } = await supabaseAdmin
     .from('media_items')
-    .upsert(items, { onConflict: ['external_id', 'source'] })
+    .upsert(items, { onConflict: 'external_id,source' })
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
-  return NextResponse.json({ imported: data?.length ?? 0 })
+  return NextResponse.json({ imported: items.length })
 } 

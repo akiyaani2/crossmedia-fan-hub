@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import custom component styles */
+@import "../styles/sidebar.css";
+
 @layer base {
   body {
     /* Apply the custom sans font family */

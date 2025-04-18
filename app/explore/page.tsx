@@ -9,10 +9,21 @@ import type { Database } from '@/types/supabase';
 // MediaItem type from Supabase database
 type MediaItem = Database['public']['Tables']['media_items']['Row'];
 
+// Placeholder data for initial view
+const placeholderItems: Partial<MediaItem>[] = Array(10).fill(null).map((_, i) => ({
+  id: `placeholder-${i}`,
+  title: 'Loading Title...',
+  poster_url: null, // Or a placeholder image URL
+  media_type: 'unknown',
+  popularity: 0,
+}));
+
 export default function ExplorePage() {
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [items, setItems] = useState<MediaItem[]>([]);
+  // Start with placeholder items, set flag when real search happens
+  const [items, setItems] = useState<Partial<MediaItem>[]>(placeholderItems);
+  const [hasSearched, setHasSearched] = useState(false);
 
   // Debounced live‑search for dropdown suggestions
   useEffect(() => {
@@ -46,57 +57,62 @@ export default function ExplorePage() {
     }
     setItems(data || []);
     setSuggestions([]);
+    setHasSearched(true); // Mark that a search has been performed
   }
 
   return (
-    <div className="flex gap-8">
+    <div className="flex gap-8 bg-midnight-ink text-light-gray min-h-screen">
       <Sidebar />
-      <main className="flex-1 p-6">
-        <h1 className="text-3xl font-bold mb-6">Explore Content</h1>
-        <div className="relative w-full max-w-xl">
-          <input
-            type="text"
-            className="border rounded px-3 py-2 w-full"
-            placeholder="Search movies, games, comics…"
-            value={query}
-            onChange={e => setQuery(e.target.value)}
-          />
-          {suggestions.length > 0 && (
-            <ul className="absolute bg-white dark:bg-gray-800 w-full mt-1 rounded shadow-lg z-10">
-              {suggestions.map((t, i) => (
-                <li
-                  key={i}
-                  className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
-                  onClick={() => { setQuery(t); handleSearch(t); }}
-                >
-                  {t}
-                </li>
-              ))}
-            </ul>
-          )}
+      <main className="flex-1 p-8">
+        <h1 className="text-4xl font-headline font-bold mb-8 text-white">Explore Content</h1>
+        <div className="flex items-center gap-3 mb-6">
+          <div className="relative flex-grow max-w-xl">
+            <input
+              type="text"
+              className="border border-medium-gray bg-gray-800/50 placeholder-medium-gray text-light-gray rounded px-4 py-2 w-full focus:outline-none focus:border-neon-accent focus:ring-1 focus:ring-neon-accent/50 transition duration-200"
+              placeholder="Search movies, games, comics…"
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+            />
+            {suggestions.length > 0 && (
+              <ul className="absolute bg-gray-800 border border-medium-gray w-full mt-1 rounded shadow-lg z-10 overflow-hidden">
+                {suggestions.map((t, i) => (
+                  <li
+                    key={i}
+                    className="px-4 py-2 hover:bg-cosmic-blue/30 cursor-pointer transition duration-150"
+                    onClick={() => { setQuery(t); handleSearch(t); }}
+                  >
+                    {t}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+          <button
+            onClick={() => handleSearch()}
+            className="bg-cosmic-blue hover:bg-opacity-80 text-white font-semibold px-5 py-2 rounded transition duration-200 focus:outline-none focus:ring-2 focus:ring-cosmic-blue/50 focus:ring-offset-2 focus:ring-offset-midnight-ink"
+          >
+            Search
+          </button>
         </div>
-        <button
-          onClick={() => handleSearch()}
-          className="mt-2 bg-cosmic-blue text-white px-4 py-2 rounded"
-        >
-          Search
-        </button>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 py-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 py-6">
           {items.map(item => (
             <Card
               key={item.id}
-              title={item.title}
-              posterUrl={item.poster_url}
-              type={item.media_type}
-              user="—"
+              title={item.title ?? 'Loading...'}
+              posterUrl={item.poster_url ?? null}
+              type={item.media_type ?? 'unknown'}
+              user={item.id?.toString().startsWith('placeholder') ? '' : '—'}
               likes={item.popularity ?? 0}
               comments={(item.popularity ?? 0) * 10}
+              isLoading={item.id?.toString().startsWith('placeholder')}
             />
           ))}
-          {!items.length && (
-            <p className="col-span-full text-center text-gray-500">
-              No results for “{query}”
+          {hasSearched && !items.length && (
+            <p className="col-span-full text-center text-medium-gray py-10">
+              No results found for “<span className="text-light-gray font-medium">{query}</span>”
             </p>
           )}
         </div>
