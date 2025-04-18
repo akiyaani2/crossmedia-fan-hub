@@ -23,18 +23,23 @@ const WorkSidebar = ({ workData }: { workData: any }) => {
       {/* Author Info */}
       <div className="bg-gray-800/50 border border-medium-gray/30 rounded-lg p-4">
         <h3 className="text-lg font-semibold text-neon-accent mb-3">Author</h3>
-        <Link href={`/user/${workData.authorSlug}`} className="flex items-center gap-3 group">
+        <Link
+          href={`/user/${workData.authorSlug}`}
+          className="flex items-center gap-3 group"
+          >
           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cosmic-blue to-deep-purple flex-shrink-0 group-hover:ring-2 ring-neon-accent/50 transition-all"></div>
           <span className="text-light-gray group-hover:text-white transition-colors">{workData.author}</span>
         </Link>
       </div>
-
       {/* Metadata */}
       <div className="bg-gray-800/50 border border-medium-gray/30 rounded-lg p-4 space-y-3">
         <h3 className="text-lg font-semibold text-neon-accent mb-2">Details</h3>
         <div>
           <span className="text-xs font-medium text-medium-gray uppercase">Fandom:</span>
-          <Link href={`/fandoms/${workData.fandomSlug}`} className="block text-sm text-light-gray hover:text-neon-accent transition-colors">{workData.fandom}</Link>
+          <Link
+            href={`/fandoms/${workData.fandomSlug}`}
+            className="block text-sm text-light-gray hover:text-neon-accent transition-colors"
+            >{workData.fandom}</Link>
         </div>
         <div>
           <span className="text-xs font-medium text-medium-gray uppercase">Published:</span>
@@ -44,14 +49,17 @@ const WorkSidebar = ({ workData }: { workData: any }) => {
            <span className="text-xs font-medium text-medium-gray uppercase">Tags:</span>
            <div className="flex flex-wrap gap-1 mt-1">
              {workData.tags.map((tag: string) => (
-               <Link href={`/explore?tag=${tag.toLowerCase()}`} key={tag} className="text-xs bg-cosmic-blue/70 text-light-gray px-2 py-0.5 rounded hover:bg-cosmic-blue transition-colors">
+               <Link
+                 href={`/explore?tag=${tag.toLowerCase()}`}
+                 key={tag}
+                 className="text-xs bg-cosmic-blue/70 text-light-gray px-2 py-0.5 rounded hover:bg-cosmic-blue transition-colors"
+                 >
                  {tag}
                </Link>
              ))}
            </div>
          </div>
       </div>
-
       {/* Interactions & Stats */}
       <div className="bg-gray-800/50 border border-medium-gray/30 rounded-lg p-4 space-y-3">
          <h3 className="text-lg font-semibold text-neon-accent mb-2">Stats & Actions</h3>
@@ -135,11 +143,13 @@ export default function WorkPage({ params }: { params: { workId: string } }) {
       {/* Top Section: Title and Author */}
       <div className="mb-6 md:mb-8 text-center md:text-left">
         <h1 className="text-3xl md:text-4xl font-bold font-headline text-white mb-1">{workData.title}</h1>
-        <Link href={`/user/${workData.authorSlug}`} className="text-lg text-light-gray hover:text-neon-accent transition-colors">
+        <Link
+          href={`/user/${workData.authorSlug}`}
+          className="text-lg text-light-gray hover:text-neon-accent transition-colors"
+          >
           by {workData.author}
         </Link>
       </div>
-
       {/* Main Layout: Content + Sidebar */}
       <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
         {/* Main Content Area */}

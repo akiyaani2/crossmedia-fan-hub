@@ -1,105 +1,44 @@
 'use client';
-
-import { useState, useEffect } from 'react';
-import { supabaseBrowser } from '@/lib/supabaseBrowser';
-import Card from '@/components/Card';
+import { useEffect, useState } from 'react';
 import Sidebar from '@/components/Sidebar';
-import type { Database } from '@/types/supabase';
+import SearchInput from '@/components/SearchInput';
+import Tabs, { Tab } from '@/components/Tabs';
+import SkeletonGrid from '@/components/SkeletonGrid';
+import MediaGrid from '@/components/MediaGrid';
 
-// MediaItem type from Supabase database
-type MediaItem = Database['public']['Tables']['media_items']['Row'];
+interface Item { id: string; title: string; type: string }
 
 export default function ExplorePage() {
-  const [query, setQuery] = useState('');
-  const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [items, setItems] = useState<MediaItem[]>([]);
+  const [q, setQ] = useState('');
+  const [tab, setTab] = useState<Tab>('All');
+  const [loading, setLoading] = useState(false);
+  const [items, setItems] = useState<Item[]>([]);
 
-  // Debounced live‑search for dropdown suggestions
   useEffect(() => {
-    if (query.length < 2) {
-      setSuggestions([]);
-      return;
-    }
-    const timeout = setTimeout(async () => {
-      const res = await fetch(`/api/search/titles?q=${encodeURIComponent(query)}&limit=5`);
-      const { titles } = (await res.json()) as { titles: string[] };
-      setSuggestions(titles);
-    }, 250);
-    return () => clearTimeout(timeout);
-  }, [query]);
-
-  // Main search handler: check cache, then import externally if needed
-  async function handleSearch(q: string = query) {
-    // 1) Try Supabase cache
-    let { data } = await supabaseBrowser
-      .from('media_items')
-      .select('*')
-      .ilike('title', `%${q}%`);
-    // 2) If no cache hits, import externally and re‑query
-    if (!data?.length) {
-      await fetch(`/api/import/tmdb?q=${encodeURIComponent(q)}`);
-      const fresh = await supabaseBrowser
-        .from('media_items')
-        .select('*')
-        .ilike('title', `%${q}%`);
-      data = fresh.data;
-    }
-    setItems(data || []);
-    setSuggestions([]);
-  }
+    let ignore = false;
+    setLoading(true);
+    const params = new URLSearchParams({ q, limit: '24' }).toString();
+    fetch(`/api/search/titles?${params}`)
+      .then(r => (r.ok ? r.json() : []))
+      .then((data: Item[]) => {
+        if (!ignore) {
+          const filtered =
+            tab === 'All' ? data : data.filter(d => d.type.toLowerCase() === tab.toLowerCase());
+          setItems(filtered);
+          setLoading(false);
+        }
+      })
+      .catch(() => { if (!ignore) setLoading(false); });
+    return () => { ignore = true; };
+  }, [q, tab]);
 
   return (
     <div className="flex gap-8">
       <Sidebar />
-      <main className="flex-1 p-6">
-        <h1 className="text-3xl font-bold mb-6">Explore Content</h1>
-        <div className="relative w-full max-w-xl">
-          <input
-            type="text"
-            className="border rounded px-3 py-2 w-full"
-            placeholder="Search movies, games, comics…"
-            value={query}
-            onChange={e => setQuery(e.target.value)}
-          />
-          {suggestions.length > 0 && (
-            <ul className="absolute bg-white dark:bg-gray-800 w-full mt-1 rounded shadow-lg z-10">
-              {suggestions.map((t, i) => (
-                <li
-                  key={i}
-                  className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
-                  onClick={() => { setQuery(t); handleSearch(t); }}
-                >
-                  {t}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-        <button
-          onClick={() => handleSearch()}
-          className="mt-2 bg-cosmic-blue text-white px-4 py-2 rounded"
-        >
-          Search
-        </button>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 py-6">
-          {items.map(item => (
-            <Card
-              key={item.id}
-              title={item.title}
-              posterUrl={item.poster_url}
-              type={item.media_type}
-              user="—"
-              likes={item.popularity ?? 0}
-              comments={(item.popularity ?? 0) * 10}
-            />
-          ))}
-          {!items.length && (
-            <p className="col-span-full text-center text-gray-500">
-              No results for “{query}”
-            </p>
-          )}
-        </div>
+      <main className="flex-1 px-8 py-6">
+        <SearchInput value={q} onChange={setQ} />
+        <Tabs active={tab} onChange={setTab} />
+        {loading ? <SkeletonGrid /> : <MediaGrid items={items} />}
       </main>
     </div>
   );

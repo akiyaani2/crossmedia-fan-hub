@@ -74,3 +74,13 @@ model Profile {
   bio    String? @db.Text
   // Add other profile fields like username, location, etc.
 }
+
+// Media items table for books/comics/fanfic/video
+model MediaItem {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title     String
+  type      String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("media_items")
+}
