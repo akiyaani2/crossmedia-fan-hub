@@ -1,0 +1,24 @@
+/* Fallback gradient for reduced motion users */
+.portal-fallback-gradient {
+  @apply absolute inset-0 bg-gradient-to-br from-purple-900 via-indigo-900 to-blue-900; /* Darker variant - no z-index needed here */
+}
+
+/* reduce-motion users just get a slow shimmer */
+@media (prefers-reduced-motion: reduce) {
+  .portal-fallback-gradient {
+    background-size: 200% 200%;
+    animation: shimmer 20s linear infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    } /* Added midpoint for smoother loop */
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+} 

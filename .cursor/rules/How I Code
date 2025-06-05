@@ -1,0 +1,38 @@
+# 🧠 AI Coding Pattern Preferences
+
+## ✅ General Principles
+- Always prefer **simple solutions** that accomplish the task with minimal complexity.
+- Avoid **duplication of code** whenever possible. Always check if similar functionality already exists in the codebase before adding new logic.
+- Write code with awareness of different environments: **dev, test, and prod**.
+- Only make changes that are requested or clearly scoped — ensure you understand the full context before modifying code.
+- When fixing bugs, **do not introduce new patterns or tech** without first exhausting all options using the current system. If a new pattern is introduced, remove legacy logic to avoid duplication.
+- Keep the codebase **clean and well organized**.
+
+## 🛠️ Code Structure & Scripts
+- Avoid writing scripts in files unless they're used multiple times or intended to be part of the core system.
+- **Split large files** that grow beyond **200–300 lines** into logical modules or components.
+- **Mock data only in test files.** Never mock or inject fake data into dev or prod logic.
+- Never add stubs or fake data patterns to production pathways — this risks unexpected behavior.
+- Never overwrite the `.env` file without first **asking and confirming**.
+
+## 🧪 Testing & Safety
+- Include basic **unit tests** for any new functions or logic.
+- Use mocks or fixtures for test data; never call real APIs or use live data during tests.
+- Add validation checks to catch issues early (e.g., input format, null checks, range checks).
+
+## 💬 Communication & Clarity
+- Always **leave a comment** or update documentation when logic is non-obvious.
+- Include relevant context when opening a pull request: what changed, why, and what to test.
+- Name functions and variables with clear, descriptive names. Avoid abbreviations unless they’re universally understood.
+
+## 🛡️ Environment Discipline
+- Separate config by environment (e.g., `.env.development`, `.env.production`) and do not mix.
+- Use **feature flags or environment checks** to toggle experimental features.
+- Ensure code is deployable in any environment without modification — no hardcoded paths or values.
+
+## ⚠️ Additions (Recommended Rules)
+- Use **linting + formatting tools** (e.g., ESLint, Prettier, Black) on every commit or PR.
+- Add **comments or documentation updates** in the same PR as logic changes.
+- Always **review logs and test coverage reports** after CI runs to ensure quality.
+
+---

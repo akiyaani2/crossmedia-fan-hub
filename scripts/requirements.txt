@@ -1,0 +1,4 @@
+supabase
+requests
+python-dotenv # To load environment variables from .env file
+numpy         # For numerical operations (vector math) 
