@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import type { Database } from '@/types/supabase'
 
-export async function GET(request: NextRequest, context: { params: { source: string } }) {
-  const { params } = context
-  const { source } = params
+export async function GET(request: NextRequest, { params }: { params: { source: string } }) {
+  const source = params.source;
   // Dynamically import external API helpers and supabase client
   const { fetchTMDB, fetchRAWG, fetchComicVine, supabaseAdmin } = await import('@/lib/externalApi')
   const url = new URL(request.url)

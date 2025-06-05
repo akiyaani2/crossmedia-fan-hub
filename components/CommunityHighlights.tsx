@@ -39,12 +39,8 @@ const CommunityHighlights = () => {
           {highlights.map((item, index) => {
             const HighlightIcon = item.icon;
             return (
-              <Link href={item.link} key={index} className="block group">
-                {/* Themed card with hover effect */}
-                <div className="bg-gray-800/50 dark:bg-gray-800/50 rounded-lg shadow-lg p-6 
-                                        border border-medium-gray/30 
-                                        hover:border-cosmic-blue/50 hover:bg-gray-800/80 
-                                        transition-all duration-300 ease-in-out transform hover:-translate-y-1 h-full">
+              <Link href={item.link} key={index} className="block group" >
+                <div className="relative overflow-hidden rounded-lg shadow-lg bg-gray-800/70 group-hover:shadow-xl group-hover:shadow-neon-accent/20 border border-medium-gray/30 group-hover:border-neon-accent/50 transition-all duration-300">
                   {/* Themed type tag */}
                   <span className="inline-flex items-center text-xs bg-neon-accent/80 text-midnight-ink px-3 py-1 rounded-full font-semibold mb-4">
                     <HighlightIcon className="w-3.5 h-3.5 mr-1.5" />

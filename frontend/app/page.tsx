@@ -1,5 +1,3 @@
-// app/page.tsx
-
 'use client'; // Required for motion components AND hooks
 
 import HeroSection from "@/components/HeroSection";
@@ -10,6 +8,7 @@ import CommunityHighlights from "@/components/CommunityHighlights";
 import { motion } from 'framer-motion';
 import { useUser } from '@supabase/auth-helpers-react'; // Import useUser
 import { useEffect } from 'react'; // Import useEffect
+import ConstellationPortal from "@/components/portal/ConstellationPortal"; // Import the portal
 
 // Define animation variants for sections
 const sectionVariants = {
@@ -35,9 +34,16 @@ export default function Home() {
   }, [user]);
 
   return (
-    <>
-      {/* Hero section typically doesn't need scroll animation */}
-      <HeroSection />
+    <main className="flex min-h-screen flex-col items-center justify-between">
+      {/* Wrap HeroSection and Portal in a relative container */}
+      <div className="relative w-full">
+        {/* Portal goes first, positioned absolutely behind */}
+        <ConstellationPortal />
+        {/* HeroSection content sits on top */}
+        <div className="relative z-10"> {/* Ensure HeroSection content is above portal */} 
+          <HeroSection />
+        </div>
+      </div>
 
       {/* Wrap subsequent sections with motion.section */}
       <motion.section
@@ -75,6 +81,6 @@ export default function Home() {
       >
         <CommunityHighlights />
       </motion.section>
-    </>
+    </main>
   );
-}
+} 

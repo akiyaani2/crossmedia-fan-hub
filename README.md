@@ -1,40 +1,3 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
 ## 🚀 vNext Vision
 
 A moon-shot architecture that treats every piece of fan media, every user interaction, and every community trend as signals in a single, self-evolving knowledge fabric—closer in spirit to Google's original Transformer leap or DeepSeek's efficiency breakthrough than to today's conventional recommender stacks.
@@ -127,3 +90,52 @@ Budget: ~2 midsize engineers + 1 designer.
 *   **Federated personalization.** Users own their micro-model—a privacy approach even Spotify/Netflix haven't mainstreamed.
 *   **Explainable AI.** Turns black-box recs into shareable mini-stories, boosting trust and social virality.
 *   **Efficient by design.** Dual-Tower + ANN + LoRA fine-tuning keeps infra bills sane (DeepSeek-style efficiency).
+
+---
+
+## 📝 Changelog: Major Refactor & MVP Streamline (2024-06-10)
+
+### Overview
+Today, the codebase was restructured for a leaner, more maintainable MVP. The focus was on:
+- Modularizing the repo into clear service boundaries (frontend, embedding service, scripts, infra)
+- Removing Docker as a local dev requirement (all services/scripts run directly)
+- Improving local dev experience and CI/CD simplicity
+- Laying groundwork for scalable, production-ready architecture
+
+### Key Changes
+
+#### 1. **Monorepo Restructure**
+- All Next.js frontend code moved to `/frontend/` (including `app/`, `components/`, `styles/`, `public/`, `lib/`, `hooks/`, `types/`, and all config files)
+- Embedding microservice (FastAPI, Python) lives in `/services/embedding_service/`
+- Python CLI workers (`ingest.py`, `session_worker.py`) live in `/scripts/`
+- Infrastructure (Supabase migrations, edge functions, etc.) now in `/infra/supabase/`
+- Added placeholder/README files to clarify each folder's purpose
+
+#### 2. **Makefile & Local Dev**
+- Added a top-level `Makefile` for common dev tasks (run frontend, embedding service, workers, lint, etc.)
+- All Python services/scripts run directly (no Docker required for local dev)
+- Supabase can be run locally via CLI (`supabase start`) or pointed at a cloud project
+
+#### 3. **CI/CD Modernization**
+- `.github/workflows/ci.yml` updated for new structure: installs, lints, and (optionally) tests each service in isolation
+- No Docker build steps in CI; everything runs natively
+
+#### 4. **Environment Variables**
+- Added root `.env.example` and per-service `.env.example` files for clarity
+- All services/scripts now expect config via `.env` files (no hardcoded secrets)
+
+#### 5. **Frontend Code Moves**
+- All Next.js app code, API routes, and supporting files moved under `/frontend/`
+- Updated all import paths and config files to match new structure
+
+#### 6. **Supabase SQL & Scripts**
+- SQL helper functions for ingestion and user vector building documented in `/infra/supabase/`
+- Python scripts for ingestion and session vector building updated to use new structure and env config
+
+#### 7. **Docs & Onboarding**
+- Updated READMEs in each major folder with new run/test/lint instructions
+- Documented local dev flow (no Docker required)
+
+---
+
+**This refactor sets the stage for rapid MVP iteration, easier onboarding, and a clear path to production deployment.**

@@ -1,0 +1,12 @@
+fastapi
+uvicorn[standard] # Includes standard dependencies like websockets, http tools
+torch
+transformers
+pydantic
+requests
+
+# Removed Pillow (PIL)
+
+# Add specific versions if needed, e.g.:
+# torch==1.13.1
+# transformers==4.25.1 

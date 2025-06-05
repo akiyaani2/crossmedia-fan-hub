@@ -77,8 +77,8 @@ const Card: FC<CardProps> = ({ title, posterUrl, type, user, likes, comments, sl
     </div>
   )
   
-  // Wrap with Link if slug is provided
-  return slug ? <Link href={`/work/${slug}`} className="block h-full">{cardContent}</Link> : cardContent
+  // Conditionally wrap content with Link if slug is provided
+  return slug ? <Link href={`/work/${slug}`} className="block h-full" >{cardContent}</Link> : cardContent;
 }
 
 export default Card 

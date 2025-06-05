@@ -59,7 +59,7 @@ const TrendingCarousel = () => {
       >
         {trendingItems.map(item => (
           <SwiperSlide key={item.id} className="group cursor-pointer h-full pb-2"> 
-             <Link href={`/work/${item.slug}`} className="block h-full">
+             <Link href={`/work/${item.slug}`} className="block h-full" >
               {/* Use darker, themed card style with border */}
               <div className="relative bg-gray-800/60 dark:bg-gray-800/60 border border-medium-gray/30 rounded-lg shadow-lg overflow-hidden group-hover:shadow-xl group-hover:shadow-neon-accent/20 group-hover:border-neon-accent/50 transition-all duration-300 h-full flex flex-col">
                 <div className="relative aspect-video w-full overflow-hidden">
